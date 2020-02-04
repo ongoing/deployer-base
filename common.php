@@ -5,6 +5,10 @@ namespace Deployer;
 set('git_tty', true);
 set('allow_anonymous_stats', false);
 
+// configurations
+set('translation_app_name', 'app');
+set('translation_locale', 'en');
+
 // Tasks
 desc('Build assets using encore');
 task('deploy:build:assets', function() {
@@ -83,6 +87,10 @@ task('deploy:schema_update', function () {
 
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
+
+task('translation:extract', function () {
+    run('cd {{release_path}} && php {{console_path}} translation:extract -c {{translation_app_name}} {{translation_locale}}');
+})->once();
 
 task('reload:php-fpm', function () {
     run('nine-flush-fpm');
