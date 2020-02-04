@@ -9,6 +9,14 @@ set('allow_anonymous_stats', false);
 set('translation_app_name', 'app');
 set('translation_locale', 'en');
 
+set('sentry_api_key', function () {
+    return getenv('SENTRY_API_KEY');
+});
+
+set('private_key', function () {
+    return getenv('PRIVATE_KEY') ?: '~/.ssh/id_rsa';
+});
+
 // Tasks
 desc('Build assets using encore');
 task('deploy:build:assets', function() {
