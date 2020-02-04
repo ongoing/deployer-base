@@ -4,7 +4,6 @@ namespace Deployer;
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
 set('allow_anonymous_stats', false);
-set('console_path', 'bin/console');
 
 // Tasks
 desc('Build assets using encore');
