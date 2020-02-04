@@ -1,6 +1,5 @@
 <?php
 namespace Deployer;
-require 'recipe/symfony4.php';
 
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
