@@ -9,10 +9,46 @@ set('console_path', 'bin/console');
 
 // Tasks
 desc('Build assets using encore');
-task('deploy:build_assets', function() {
+task('deploy:build:assets', function() {
     run('cd {{release_path}} && yarn install');
     run('cd {{release_path}} && yarn encore production');
 });
+
+desc('Build assets using encore');
+task('deploy:build:assets_local', function() {
+    set('localBranch', runLocally('git rev-parse --abbrev-ref HEAD'));
+    runLocally('git stash');
+    runLocally('git checkout {{branch}}');
+    runLocally('git pull');
+    $config = [];
+    $config['command'] = 'yarn encore production';
+    $config['message'] = 'chore: rebuild assets';
+    $config['paths'] = ['public/build'];
+
+    if ($config['command']) {
+        runLocally($config['command'], ['timeout' => null]);
+    }
+
+    if (is_array($config['paths'])) {
+        $makeCommit = false;
+
+        foreach ($config['paths'] as $path) {
+            $hasFolder = runLocally("ls $path 2>/dev/null || true");
+            $hasCommits = !testLocally("git add --dry-run -- $path");
+            if ($hasFolder && $hasCommits) {
+                runLocally("git add $path");
+                $makeCommit = true;
+            }
+        }
+
+        if ($makeCommit) {
+            runLocally('git commit -m "' . $config['message'] . '" || echo ""');
+            runLocally('git push');
+        }
+    }
+    runLocally('git checkout {{localBranch}}');
+    runLocally('git stash pop');
+})->once();
 
 desc('Create release tag on git');
 task('deploy:tag', function () {
@@ -43,7 +79,7 @@ task('deploy:schema_update', function () {
             throw new \Exception("Aborted deployment because of db changes");
         }
     } else {
-        writeln('No database changes.');
+        writeln('<info>No database changes.</info>');
     }
 })->once();
 
