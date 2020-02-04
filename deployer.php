@@ -5,6 +5,7 @@ require 'recipe/symfony4.php';
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
 set('allow_anonymous_stats', false);
+set('console_path', 'bin/console');
 
 // Tasks
 desc('Build assets using encore');
@@ -12,7 +13,6 @@ task('deploy:build_assets', function() {
     run('cd {{release_path}} && yarn install');
     run('cd {{release_path}} && yarn encore production');
 });
-//after('deploy:vendors', 'deploy:build_assets');
 
 desc('Create release tag on git');
 task('deploy:tag', function () {
@@ -34,11 +34,11 @@ task('deploy:tag', function () {
 
 desc('Update database schema using symfony command');
 task('deploy:schema_update', function () {
-    $output = run('cd {{release_path}} && php bin/console d:s:u --dump-sql');
+    $output = run('cd {{release_path}} && php {{console_path}} d:s:u --dump-sql');
     if (strpos($output, '[OK] Nothing to update') === false) {
         writeln($output);
         if (askConfirmation('Apply these changes?')) {
-            run('cd {{release_path}} && php bin/console d:s:u --force');
+            run('cd {{release_path}} && php {{console_path}} d:s:u --force');
         } else {
             throw new \Exception("Aborted deployment because of db changes");
         }
@@ -47,16 +47,12 @@ task('deploy:schema_update', function () {
     }
 })->once();
 
-//after('deploy:cache:clear', 'deploy:schema_update');
 // [Optional] if deploy fails automatically unlock.
 after('deploy:failed', 'deploy:unlock');
-// Migrate database before symlink new release.
-// before('deploy:symlink', 'database:migrate');
-//task('reload:php-fpm', function () {
-//    run('nine-flush-fpm');
-//});
-//task('cache:clear', function () {
-//    run('php /home/www-corp/sika_sam/current/bin/console cache:clear --env=prod');
-//});
-//after('deploy', 'deploy:tag');
-//after('deploy', 'reload:php-fpm');
+
+task('reload:php-fpm', function () {
+    run('nine-flush-fpm');
+});
+task('cache:clear', function () {
+    run('cd {{release_path}} && php {{console_path}} cache:clear --env=prod');
+});
