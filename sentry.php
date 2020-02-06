@@ -17,7 +17,7 @@ task(
     static function () {
         $now = date('c');
 
-        $defaultConfig = [
+        $config = [
             'version' => getReleaseGitRef(),
             'refs' => [],
             'ref' => null,
@@ -28,11 +28,13 @@ task(
             'date_deploy_finished' => $now,
             'sentry_server' => 'https://sentry.io',
             'previous_commit' => null,
-            'environment' => get('symfony_env', 'prod'),
+            'environment' => get('sentry_environment'),
+            'organization' => get('sentry_organisation'),
+            'token' => get('sentry_token'),
+            'projects' => [get('sentry_project')],
             'deploy_name' => null
         ];
 
-        $config = array_merge($defaultConfig, (array) get('sentry'));
         array_walk(
             $config,
             static function (&$value) use ($config) {

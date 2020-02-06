@@ -11,8 +11,8 @@ set('allow_anonymous_stats', false);
 set('translation_app_name', 'app');
 set('translation_locale', 'en');
 
-set('sentry_api_key', function () {
-    return getenv('SENTRY_API_KEY');
+set('sentry_token', function () {
+    return getenv('SENTRY_TOKEN');
 });
 
 set('private_key', function () {
