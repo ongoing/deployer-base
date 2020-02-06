@@ -1,4 +1,7 @@
 {
   "name": "ongoing/deployer-base",
-  "license": "proprietary"
+  "license": "proprietary",
+  "require": {
+    "deployer/recipes": "*"
+  }
 }

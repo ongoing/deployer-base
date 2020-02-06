@@ -1,6 +1,8 @@
 <?php
 namespace Deployer;
 
+require_once 'vendor/deployer/recipes/recipe/sentry.php';
+
 // [Optional] Allocate tty for git clone. Default value is false.
 set('git_tty', true);
 set('allow_anonymous_stats', false);
