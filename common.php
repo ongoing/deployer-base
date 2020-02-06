@@ -69,7 +69,7 @@ task('deploy:tag', function () {
     set('tag', date('Y-m-d_T_H-i-s'));
     set('day', date('d.m.Y'));
     set('time', date('H:i:s'));
-    runLocally('git stash');
+    $stashResult = runLocally('git stash');
     runLocally('git checkout {{branch}}');
     runLocally('git pull');
     runLocally(
@@ -77,7 +77,9 @@ task('deploy:tag', function () {
     );
     runLocally('git push origin --tags');
     runLocally('git checkout {{localBranch}}');
-    runLocally('git stash pop');
+    if ($stashResult != "No local changes to save") {
+        runLocally('git stash pop');
+    }
 })->onStage('prod')->once();
 
 desc('Update database schema using symfony command');
