@@ -105,6 +105,3 @@ task('translation:extract', function () {
 task('reload:php-fpm', function () {
     run('nine-flush-fpm');
 });
-task('cache:clear', function () {
-    run('cd {{release_path}} && php {{console_path}} cache:clear --env=prod');
-});
