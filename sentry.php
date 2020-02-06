@@ -130,7 +130,7 @@ EXAMPLE
             )
         );
     }
-);
+)->once();
 
 function getReleaseGitRef(): Closure
 {
