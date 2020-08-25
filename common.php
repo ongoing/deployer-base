@@ -84,7 +84,7 @@ task('deploy:tag', function () {
 
 desc('Update database schema using symfony command');
 task('deploy:schema_update', function () {
-    $output = run('cd {{release_path}} && php {{console_path}} d:s:u --dump-sql');
+    $output = run('cd {{release_path}} && {{bin/php}} {{console_path}} d:s:u --dump-sql');
     if (strpos($output, '[OK] Nothing to update') === false) {
         writeln($output);
         if (askConfirmation('Apply these changes?')) {
@@ -101,7 +101,7 @@ task('deploy:schema_update', function () {
 after('deploy:failed', 'deploy:unlock');
 
 task('translation:extract', function () {
-    run('cd {{release_path}} && php {{console_path}} translation:extract -c {{translation_app_name}} {{translation_locale}}');
+    run('cd {{release_path}} && {{bin/php}} {{console_path}} translation:extract -c {{translation_app_name}} {{translation_locale}}');
 })->once();
 
 task('reload:php-fpm', function () {
