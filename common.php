@@ -88,7 +88,7 @@ task('deploy:schema_update', function () {
     if (strpos($output, '[OK] Nothing to update') === false) {
         writeln($output);
         if (askConfirmation('Apply these changes?')) {
-            run('cd {{release_path}} && php {{console_path}} d:s:u --force');
+            run('cd {{release_path}} && {{bin/php}} {{console_path}} d:s:u --force');
         } else {
             throw new \Exception("Aborted deployment because of db changes");
         }
